@@ -1,0 +1,60 @@
+/* Tema Escuro */
+:root {
+    --primary-bg: #1a1a1a;
+    --secondary-bg: #2c2c2c;
+    --text-color: #ffffff;
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+}
+
+[data-theme="light"] {
+    --primary-bg: #ffffff;
+    --secondary-bg: #f8f9fa;
+    --text-color: #000000;
+    --primary-color: #0056b3;
+    --secondary-color: #5a6268;
+}
+
+body {
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+}
+
+.sidebar {
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid var(--secondary-color);
+}
+
+.main-content {
+    margin-left: 250px;
+}
+
+.card {
+    background-color: var(--secondary-bg);
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+.navbar, .footer {
+    background-color: var(--secondary-bg);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: static;
+        height: auto;
+    }
+    .main-content {
+        margin-left: 0;
+    }
+}

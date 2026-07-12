@@ -15,3 +15,9 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     return {"status": "API funcionando"}
+
+
+from app.routers import auth, password
+
+app.include_router(auth.router, prefix="/auth", tags=["Autenticação"])
+app.include_router(password.router, prefix="/auth", tags=["Recuperação de Senha"])

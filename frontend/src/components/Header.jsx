@@ -10,20 +10,22 @@ export default function Header() {
   }
 
   return (
-    <header style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', borderBottom: '1px solid #ddd' }}>
-      <Link to="/" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Meu Site</Link>
-      <nav style={{ display: 'flex', gap: '1rem' }}>
-        <Link to="/produtos">Produtos</Link>
-        <Link to="/carrinho">Carrinho</Link>
-        {isAuthenticated() ? (
-          <>
-            <Link to="/meus-pedidos">Meus Pedidos</Link>
-            <button onClick={handleLogout}>Sair</button>
-          </>
-        ) : (
-          <Link to="/login">Entrar</Link>
-        )}
-      </nav>
+    <header className="site-header">
+      <div className="container header-inner">
+        <Link to="/" className="brand">Meu Site</Link>
+        <nav className="nav-links">
+          <Link to="/produtos">Produtos</Link>
+          <Link to="/carrinho">Carrinho</Link>
+          {isAuthenticated() ? (
+            <>
+              <Link to="/meus-pedidos">Meus Pedidos</Link>
+              <button onClick={handleLogout}>Sair</button>
+            </>
+          ) : (
+            <Link to="/login" className="btn-accent-link">Entrar</Link>
+          )}
+        </nav>
+      </div>
     </header>
   )
 }

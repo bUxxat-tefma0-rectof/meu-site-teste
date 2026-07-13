@@ -11,6 +11,13 @@ import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import MyOrders from './pages/MyOrders'
+import AdminLayout from './pages/admin/AdminLayout'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminProducts from './pages/admin/AdminProducts'
+import AdminOrders from './pages/admin/AdminOrders'
+import AdminCategories from './pages/admin/AdminCategories'
+import AdminCoupons from './pages/admin/AdminCoupons'
+import AdminUsers from './pages/admin/AdminUsers'
 
 export default function App() {
   return (
@@ -28,6 +35,15 @@ export default function App() {
         <Route path="/carrinho" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/meus-pedidos" element={<MyOrders />} />
+
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="produtos" element={<AdminProducts />} />
+          <Route path="pedidos" element={<AdminOrders />} />
+          <Route path="categorias" element={<AdminCategories />} />
+          <Route path="cupons" element={<AdminCoupons />} />
+          <Route path="usuarios" element={<AdminUsers />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )

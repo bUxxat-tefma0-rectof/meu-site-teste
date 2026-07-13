@@ -8,8 +8,11 @@ class UserCreate(BaseModel):
     full_name: str
     username: str
     email: EmailStr
+    country_code: str = "+55"
     phone: Optional[str] = None
     password: str
+    how_found_us: Optional[str] = None
+    terms_accepted: bool
 
     @field_validator('full_name')
     @classmethod
@@ -46,8 +49,23 @@ class UserCreate(BaseModel):
     @field_validator('password')
     @classmethod
     def validate_password(cls, v):
-        if len(v) < 6:
-            raise ValueError('Senha precisa ter pelo menos 6 caracteres')
+        if len(v) < 8:
+            raise ValueError('Senha precisa ter pelo menos 8 caracteres')
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('Senha precisa ter pelo menos uma letra maiúscula')
+        if not re.search(r'[a-z]', v):
+            raise ValueError('Senha precisa ter pelo menos uma letra minúscula')
+        if not re.search(r'[0-9]', v):
+            raise ValueError('Senha precisa ter pelo menos um número')
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-]', v):
+            raise ValueError('Senha precisa ter pelo menos um caractere especial (ex: . @ ! #)')
+        return v
+
+    @field_validator('terms_accepted')
+    @classmethod
+    def validate_terms(cls, v):
+        if not v:
+            raise ValueError('Você precisa aceitar os termos e a política de privacidade')
         return v
 
 
@@ -61,7 +79,9 @@ class UserResponse(BaseModel):
     full_name: str
     username: str
     email: str
+    country_code: str
     phone: Optional[str]
+    how_found_us: Optional[str]
     is_verified: bool
     photo_url: Optional[str]
     created_at: datetime

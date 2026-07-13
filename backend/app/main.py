@@ -12,7 +12,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://meu-site-teste-2.vercel.app",
+        "https://meu-site-teste-gamma.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],

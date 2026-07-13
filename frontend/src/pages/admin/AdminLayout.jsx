@@ -7,6 +7,7 @@ export default function AdminLayout() {
         <h3>Admin</h3>
         <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <li><Link to="/admin">Dashboard</Link></li>
+          <li><Link to="/admin/conteudo-home">Conteúdo da Home</Link></li>
           <li><Link to="/admin/produtos">Produtos</Link></li>
           <li><Link to="/admin/pedidos">Pedidos</Link></li>
           <li><Link to="/admin/categorias">Categorias</Link></li>

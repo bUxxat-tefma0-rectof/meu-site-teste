@@ -1,6 +1,6 @@
 import secrets
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -12,11 +12,25 @@ from app.utils.email import send_password_reset_email, send_password_changed_ema
 
 router = APIRouter()
 
-FRONTEND_RESET_URL = "http://localhost:5173/redefinir-senha"
+FRONTEND_RESET_URL = "https://meu-site-teste-gamma.vercel.app/redefinir-senha"
+
+
+def send_reset_email_safe(email: str, link: str):
+    try:
+        send_password_reset_email(email, link)
+    except Exception as e:
+        print(f"Erro ao enviar e-mail de reset: {e}")
+
+
+def send_changed_email_safe(email: str):
+    try:
+        send_password_changed_email(email)
+    except Exception as e:
+        print(f"Erro ao enviar e-mail de confirmação: {e}")
 
 
 @router.post("/forgot-password")
-def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
+def forgot_password(data: ForgotPasswordRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
 
     if not user:
@@ -32,13 +46,13 @@ def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
     db.commit()
 
     reset_link = f"{FRONTEND_RESET_URL}?token={token}"
-    send_password_reset_email(user.email, reset_link)
+    background_tasks.add_task(send_reset_email_safe, user.email, reset_link)
 
     return {"message": "Se o e-mail existir, você receberá um link de recuperação"}
 
 
 @router.post("/reset-password")
-def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)):
+def reset_password(data: ResetPasswordRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     reset = (
         db.query(PasswordReset)
         .filter(PasswordReset.token == data.token, PasswordReset.used == False)
@@ -59,6 +73,6 @@ def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)):
     reset.used = True
     db.commit()
 
-    send_password_changed_email(user.email)
+    background_tasks.add_task(send_changed_email_safe, user.email)
 
     return {"message": "Senha redefinida com sucesso"}

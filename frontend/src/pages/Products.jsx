@@ -10,13 +10,18 @@ export default function Products() {
   }, [])
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div className="container" style={{ padding: '2rem 1.5rem' }}>
       <h2>Produtos</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+      <div className="product-grid">
         {products.map((p) => (
-          <Link key={p.id} to={`/produtos/${p.id}`} style={{ border: '1px solid #ddd', padding: '1rem', textDecoration: 'none', color: 'inherit' }}>
-            <h3>{p.name}</h3>
-            <p>R$ {(p.promotional_price || p.price).toFixed(2)}</p>
+          <Link key={p.id} to={`/produtos/${p.id}`} className="card product-card">
+            <div className="product-image-placeholder">
+              {p.main_image_url ? <img src={p.main_image_url} alt={p.name} /> : <span>{p.name[0]}</span>}
+            </div>
+            <div className="product-card-body">
+              <h3>{p.name}</h3>
+              <span className="price-tag">{(p.promotional_price || p.price).toFixed(2)}</span>
+            </div>
           </Link>
         ))}
       </div>

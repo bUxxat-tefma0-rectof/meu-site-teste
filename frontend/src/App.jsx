@@ -13,6 +13,7 @@ import Checkout from './pages/Checkout'
 import MyOrders from './pages/MyOrders'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminHomeContent from './pages/admin/AdminHomeContent'
 import AdminProducts from './pages/admin/AdminProducts'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminCategories from './pages/admin/AdminCategories'
@@ -38,6 +39,7 @@ export default function App() {
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
+          <Route path="conteudo-home" element={<AdminHomeContent />} />
           <Route path="produtos" element={<AdminProducts />} />
           <Route path="pedidos" element={<AdminOrders />} />
           <Route path="categorias" element={<AdminCategories />} />

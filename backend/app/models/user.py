@@ -11,7 +11,11 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     phone = Column(String, nullable=True)
+    country_code = Column(String, default="+55")
     hashed_password = Column(String, nullable=False)
+
+    how_found_us = Column(String, nullable=True)
+    terms_accepted = Column(Boolean, default=False)
 
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)

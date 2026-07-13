@@ -23,16 +23,16 @@ export default function Register() {
   }
 
   return (
-    <div style={{ maxWidth: '400px', margin: '2rem auto', padding: '1rem' }}>
-      <h2>Criar conta</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="full_name" placeholder="Nome completo" onChange={handleChange} required style={{ width: '100%', marginBottom: '1rem', padding: '0.5rem' }} />
-        <input name="username" placeholder="Usuário" onChange={handleChange} required style={{ width: '100%', marginBottom: '1rem', padding: '0.5rem' }} />
-        <input name="email" type="email" placeholder="E-mail" onChange={handleChange} required style={{ width: '100%', marginBottom: '1rem', padding: '0.5rem' }} />
-        <input name="phone" placeholder="Telefone" onChange={handleChange} style={{ width: '100%', marginBottom: '1rem', padding: '0.5rem' }} />
-        <input name="password" type="password" placeholder="Senha" onChange={handleChange} required style={{ width: '100%', marginBottom: '1rem', padding: '0.5rem' }} />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" style={{ width: '100%', padding: '0.5rem' }}>Cadastrar</button>
+    <div className="auth-page">
+      <form onSubmit={handleSubmit} className="card auth-card">
+        <h2>Criar conta</h2>
+        <input name="full_name" placeholder="Nome completo" onChange={handleChange} required />
+        <input name="username" placeholder="Usuário" onChange={handleChange} required />
+        <input name="email" type="email" placeholder="E-mail" onChange={handleChange} required />
+        <input name="phone" placeholder="Telefone" onChange={handleChange} />
+        <input name="password" type="password" placeholder="Senha" onChange={handleChange} required />
+        {error && <p className="form-error">{error}</p>}
+        <button type="submit" style={{ width: '100%' }}>Cadastrar</button>
       </form>
     </div>
   )

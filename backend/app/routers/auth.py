@@ -51,7 +51,10 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     db.add(verification)
     db.commit()
 
-    send_verification_code_email(new_user.email, code)
+    try:
+        send_verification_code_email(new_user.email, code)
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
 
     return new_user
 
@@ -111,7 +114,10 @@ def resend_code(data: ResendCodeRequest, db: Session = Depends(get_db)):
     db.add(verification)
     db.commit()
 
-    send_verification_code_email(user.email, code)
+    try:
+        send_verification_code_email(user.email, code)
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
 
     return {"message": "Novo código enviado"}
 

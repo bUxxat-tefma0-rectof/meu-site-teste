@@ -1,37 +1,31 @@
-.auth-page {
-  min-height: 70vh;
+.phone-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
+  gap: 0.5rem;
 }
 
-.auth-card {
-  width: 100%;
-  max-width: 380px;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+.phone-row select {
+  flex: 0 0 130px;
 }
 
-.auth-links {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+.phone-row input {
+  flex: 1;
 }
 
-.form-error {
-  color: var(--color-danger);
-  font-size: 0.9rem;
-  margin: 0;
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
 }
 
-.cart-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.25rem;
-  margin-bottom: 0.75rem;
+.terms-checkbox input {
+  margin-top: 0.2rem;
+  width: auto;
+}
+
+.terms-checkbox a {
+  color: var(--color-primary);
+  font-weight: 500;
 }

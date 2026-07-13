@@ -1,6 +1,6 @@
 import random
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -20,8 +20,15 @@ def generate_code() -> str:
     return str(random.randint(100000, 999999))
 
 
+def send_email_safe(email: str, code: str):
+    try:
+        send_verification_code_email(email, code)
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
+
+
 @router.post("/register", response_model=UserResponse)
-def register(user_data: UserCreate, db: Session = Depends(get_db)):
+def register(user_data: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     existing_email = db.query(User).filter(User.email == user_data.email).first()
     if existing_email:
         raise HTTPException(status_code=400, detail="E-mail já cadastrado")
@@ -51,10 +58,7 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     db.add(verification)
     db.commit()
 
-    try:
-        send_verification_code_email(new_user.email, code)
-    except Exception as e:
-        print(f"Erro ao enviar e-mail: {e}")
+    background_tasks.add_task(send_email_safe, new_user.email, code)
 
     return new_user
 
@@ -97,7 +101,7 @@ def verify_email(data: VerifyEmailRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/resend-code")
-def resend_code(data: ResendCodeRequest, db: Session = Depends(get_db)):
+def resend_code(data: ResendCodeRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
@@ -114,10 +118,7 @@ def resend_code(data: ResendCodeRequest, db: Session = Depends(get_db)):
     db.add(verification)
     db.commit()
 
-    try:
-        send_verification_code_email(user.email, code)
-    except Exception as e:
-        print(f"Erro ao enviar e-mail: {e}")
+    background_tasks.add_task(send_email_safe, user.email, code)
 
     return {"message": "Novo código enviado"}
 

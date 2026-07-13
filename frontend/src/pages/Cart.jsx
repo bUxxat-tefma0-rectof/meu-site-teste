@@ -34,21 +34,21 @@ export default function Cart() {
   }, 0)
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div className="container" style={{ padding: '2rem 1.5rem', maxWidth: '700px' }}>
       <h2>Carrinho</h2>
-      {items.length === 0 && <p>Seu carrinho está vazio.</p>}
+      {items.length === 0 && <p style={{ color: 'var(--color-text-muted)' }}>Seu carrinho está vazio.</p>}
       {items.map((item, index) => (
-        <div key={index} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #ddd', padding: '0.5rem 0' }}>
+        <div key={index} className="card cart-item">
           <span>{item.product.name} x{item.quantity}</span>
-          <span>R$ {((item.product.promotional_price || item.product.price) * item.quantity).toFixed(2)}</span>
-          <button onClick={() => removeItem(index)}>Remover</button>
+          <span className="price-tag">{((item.product.promotional_price || item.product.price) * item.quantity).toFixed(2)}</span>
+          <button onClick={() => removeItem(index)} style={{ background: 'var(--color-danger)' }}>Remover</button>
         </div>
       ))}
       {items.length > 0 && (
-        <>
-          <h3>Total: R$ {total.toFixed(2)}</h3>
-          <button onClick={() => navigate('/checkout')} style={{ padding: '0.5rem 1rem' }}>Finalizar Compra</button>
-        </>
+        <div className="card" style={{ padding: '1.5rem', marginTop: '1rem' }}>
+          <h3>Total: <span className="price-tag">{total.toFixed(2)}</span></h3>
+          <button className="btn-accent" onClick={() => navigate('/checkout')} style={{ width: '100%' }}>Finalizar Compra</button>
+        </div>
       )}
     </div>
   )

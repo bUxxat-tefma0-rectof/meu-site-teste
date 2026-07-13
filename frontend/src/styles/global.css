@@ -1,118 +1,23 @@
-@import './theme.css';
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  line-height: 1.5;
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  margin: 0 0 0.5rem;
-  color: var(--color-text);
-}
-
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-}
-
-button {
-  font-family: var(--font-body);
-  cursor: pointer;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.65rem 1.25rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  background: var(--color-primary);
-  color: white;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-
-button:hover {
-  background: var(--color-primary-dark);
-  box-shadow: var(--shadow-sm);
-}
-
-button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-input, select {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  padding: 0.6rem 0.8rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
-input:focus, select:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-  border-color: var(--color-primary);
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-/* Botão de destaque (comprar, CTA principal) */
-.btn-accent {
-  background: var(--color-accent);
-  color: var(--color-text);
-}
-
-.btn-accent:hover {
-  background: var(--color-accent-dark);
-}
-
-/* Card genérico */
-.card {
-  background: var(--color-surface);
+.admin-section {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 
-.card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+.admin-list-item {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
-/* "Ticket de preço" - elemento assinatura */
-.price-tag {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: var(--color-primary);
-  position: relative;
-  display: inline-block;
+.admin-list-item input {
+  flex: 1;
 }
 
-.price-tag::before {
-  content: 'R$';
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
-  margin-right: 0.25rem;
-  vertical-align: top;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-  }
+textarea {
+  font-family: var(--font-body);
+  padding: 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
 }

@@ -6,6 +6,7 @@ import './styles/carousel.css'
 import './styles/header.css'
 import './styles/products.css'
 import './styles/auth.css'
+import './styles/home.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

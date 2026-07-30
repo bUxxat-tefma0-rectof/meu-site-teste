@@ -1,54 +1,48 @@
-const { Client, LocalAuth } = require('whatsapp-web.js');
-const fs = require('fs');
+const venom = require('venom-bot');
 
 let client = null;
 let connectionStatus = 'disconnected';
 let qrCodeString = null;
 
-function conectarWhatsApp() {
-    
-    if (!fs.existsSync('.wwebjs_auth')) {
-        fs.mkdirSync('.wwebjs_auth', { recursive: true });
-    }
-    
-    client = new Client({
-        authStrategy: new LocalAuth({
-            dataPath: '.wwebjs_auth'
-        }),
-        puppeteer: {
+async function conectarWhatsApp() {
+    try {
+        client = await venom.create({
+            session: 'whatsapp-session',
+            multidevice: true,
             headless: true,
-            args: [
+            useChrome: false,
+            browserArgs: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage'
-            ]
-        }
-    });
-    
-    client.on('qr', (qr) => {
-        qrCodeString = qr;
-        connectionStatus = 'waiting_qr';
-        console.log('📱 QR Code gerado! Acesse /qr');
-    });
-    
-    client.on('ready', () => {
+                '--disable-dev-shm-usage',
+                '--disable-gpu'
+            ],
+            catchQR: (base64Qr, asciiQR, attempts, urlCode) => {
+                qrCodeString = urlCode || base64Qr;
+                connectionStatus = 'waiting_qr';
+                console.log('📱 QR Code gerado! Acesse /qr');
+            },
+            logQR: false
+        });
+        
         connectionStatus = 'connected';
         qrCodeString = null;
         console.log('✅ WhatsApp conectado!');
-    });
-    
-    client.on('disconnected', () => {
-        connectionStatus = 'disconnected';
-        qrCodeString = null;
-        console.log('❌ Desconectado. Reconectando...');
-        setTimeout(() => conectarWhatsApp(), 5000);
-    });
-    
-    client.initialize().catch(err => {
-        console.error('Erro ao iniciar:', err.message);
+        
+        client.onStateChange((state) => {
+            console.log('Estado:', state);
+            if (state === 'CONFLICT' || state === 'UNPAIRED') {
+                connectionStatus = 'disconnected';
+                qrCodeString = null;
+                setTimeout(() => conectarWhatsApp(), 5000);
+            }
+        });
+        
+    } catch (error) {
+        console.error('Erro:', error.message);
         connectionStatus = 'error';
         setTimeout(() => conectarWhatsApp(), 10000);
-    });
+    }
 }
 
 async function enviarCodigoWhatsApp(numero, codigo) {
@@ -64,7 +58,7 @@ async function enviarCodigoWhatsApp(numero, codigo) {
                     `⚠️ Não compartilhe com ninguém!\n` +
                     `⏰ Válido por 5 minutos`;
     
-    await client.sendMessage(numeroFormatado, mensagem);
+    await client.sendText(numeroFormatado, mensagem);
     console.log(`📱 Código ${codigo} enviado para ${numeroLimpo}`);
     return true;
 }

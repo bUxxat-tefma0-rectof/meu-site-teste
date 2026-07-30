@@ -1,4 +1,4 @@
-const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@adiwajshing/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 const { Boom } = require('@hapi/boom');
 const pino = require('pino');
 
@@ -53,7 +53,6 @@ async function enviarCodigoWhatsApp(numero, codigo) {
     }
     
     try {
-        // Formata o número para o padrão do WhatsApp
         const numeroFormatado = numero.replace(/\D/g, '') + '@s.whatsapp.net';
         
         const mensagem = `🔐 *CÓDIGO DE VERIFICAÇÃO*\n\n` +

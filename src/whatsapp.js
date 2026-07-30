@@ -1,9 +1,11 @@
 const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 const { Boom } = require('@hapi/boom');
 const pino = require('pino');
+const fs = require('fs');
 
 let sock = null;
 let connectionStatus = 'disconnected';
+let qrCodeString = null;
 
 async function conectarWhatsApp() {
     try {
@@ -11,17 +13,24 @@ async function conectarWhatsApp() {
         
         sock = makeWASocket({
             auth: state,
-            printQRInTerminal: true,
+            printQRInTerminal: false,
             logger: pino({ level: 'silent' })
         });
         
         sock.ev.on('creds.update', saveCreds);
         
         sock.ev.on('connection.update', (update) => {
-            const { connection, lastDisconnect } = update;
+            const { connection, lastDisconnect, qr } = update;
+            
+            // Salva QR Code para mostrar no navegador
+            if (qr) {
+                qrCodeString = qr;
+                console.log('📱 QR Code gerado! Acesse /qr para escanear');
+            }
             
             if (connection === 'open') {
                 connectionStatus = 'connected';
+                qrCodeString = null;
                 console.log('✅ WhatsApp conectado!');
             }
             
@@ -35,6 +44,11 @@ async function conectarWhatsApp() {
                 
                 if (shouldReconnect) {
                     setTimeout(() => conectarWhatsApp(), 5000);
+                } else {
+                    console.log('⚠️ Sessão expirada. Precisa escanear QR Code novamente.');
+                    // Limpa sessão antiga
+                    fs.rmSync('auth_info_baileys', { recursive: true, force: true });
+                    setTimeout(() => conectarWhatsApp(), 3000);
                 }
             }
         });
@@ -77,8 +91,13 @@ function getStatus() {
     return connectionStatus;
 }
 
+function getQR() {
+    return qrCodeString;
+}
+
 module.exports = {
     conectarWhatsApp,
     enviarCodigoWhatsApp,
-    getStatus
+    getStatus,
+    getQR
 };

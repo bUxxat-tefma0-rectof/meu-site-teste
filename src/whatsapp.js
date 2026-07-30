@@ -2,6 +2,7 @@ const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whis
 const { Boom } = require('@hapi/boom');
 const pino = require('pino');
 const fs = require('fs');
+const puppeteer = require('puppeteer');
 
 let sock = null;
 let connectionStatus = 'disconnected';
@@ -9,7 +10,6 @@ let qrCodeString = null;
 
 async function conectarWhatsApp() {
     try {
-        // Cria diretório se não existir
         if (!fs.existsSync('auth_info_baileys')) {
             fs.mkdirSync('auth_info_baileys', { recursive: true });
         }
@@ -18,9 +18,12 @@ async function conectarWhatsApp() {
         
         sock = makeWASocket({
             auth: state,
-            printQRInTerminal: true,
+            printQRInTerminal: false,
             logger: pino({ level: 'silent' }),
-            browser: ['Chrome (Linux)', '', '']
+            browser: ['Ubuntu', 'Chrome', '20.0.0'],
+            markOnlineOnConnect: false,
+            connectTimeoutMs: 60000,
+            defaultQueryTimeoutMs: 60000
         });
         
         sock.ev.on('creds.update', saveCreds);
@@ -28,34 +31,31 @@ async function conectarWhatsApp() {
         sock.ev.on('connection.update', (update) => {
             const { connection, lastDisconnect, qr } = update;
             
-            // Salva QR Code
             if (qr) {
                 qrCodeString = qr;
-                console.log('📱 QR Code gerado! Acesse /qr para escanear');
+                console.log('📱 QR Code gerado!');
             }
             
-            // Conectado
             if (connection === 'open') {
                 connectionStatus = 'connected';
                 qrCodeString = null;
-                console.log('✅ WhatsApp Business conectado!');
+                console.log('✅ WhatsApp conectado!');
             }
             
-            // Fechado
             if (connection === 'close') {
                 const statusCode = lastDisconnect?.error instanceof Boom 
                     ? lastDisconnect.error.output.statusCode 
                     : null;
                 
                 connectionStatus = 'disconnected';
+                qrCodeString = null;
                 
                 if (statusCode === DisconnectReason.loggedOut) {
-                    console.log('⚠️ Sessão expirada! Limpando dados antigos...');
+                    console.log('⚠️ Sessão expirada!');
                     fs.rmSync('auth_info_baileys', { recursive: true, force: true });
-                    console.log('🔄 Reconectando em 3 segundos...');
                     setTimeout(() => conectarWhatsApp(), 3000);
                 } else {
-                    console.log('❌ Conexão fechada. Reconectando em 5 segundos...');
+                    console.log('❌ Reconectando em 5 segundos...');
                     setTimeout(() => conectarWhatsApp(), 5000);
                 }
             }
@@ -64,7 +64,7 @@ async function conectarWhatsApp() {
         return sock;
         
     } catch (error) {
-        console.error('Erro ao conectar WhatsApp:', error.message);
+        console.error('Erro:', error.message);
         connectionStatus = 'error';
         setTimeout(() => conectarWhatsApp(), 10000);
     }
@@ -84,13 +84,12 @@ async function enviarCodigoWhatsApp(numero, codigo) {
                         `⏰ Válido por 5 minutos`;
         
         await sock.sendMessage(numeroFormatado, { text: mensagem });
-        
         console.log(`📱 Código ${codigo} enviado para ${numero}`);
         return true;
         
     } catch (error) {
-        console.error('Erro ao enviar mensagem:', error.message);
-        throw new Error('Não foi possível enviar o código. Verifique se o número existe no WhatsApp.');
+        console.error('Erro ao enviar:', error.message);
+        throw new Error('Não foi possível enviar o código');
     }
 }
 
